@@ -5,8 +5,6 @@
 #   - learning_rate with a default of .1
 #   - max_depth with a default of 1 
 # Note that only strings can be used for widgets
-dbutils.widgets.text("run_id", "")
-dbutils.widgets.text("path", "")
 dbutils.widgets.text("n_estimators", "100")
 dbutils.widgets.text("learning_rate", ".1")
 dbutils.widgets.text("max_depth", "1")
@@ -14,6 +12,9 @@ dbutils.widgets.text("max_depth", "1")
 # COMMAND ----------
 
 # TODO
+import os
+import mlflow
+from mlflow.tracking import MlflowClient
 # Read from the widgets to create 3 variables.  Be sure to cast the values to numeric types
 n_estimators = int(dbutils.widgets.get("n_estimators")) 
 learning_rate = float(dbutils.widgets.get("learning_rate"))
@@ -22,18 +23,6 @@ max_depth = int(dbutils.widgets.get("max_depth"))
 # COMMAND ----------
 
 # TODO
-import os
-import mlflow
-from mlflow.tracking import MlflowClient
-
-client = MlflowClient()
-local_dir = "/tmp/artifact_downloads"
-if not os.path.exists(local_dir):
-    os.mkdir(local_dir)
-local_path = client.download_artifacts(dbutils.widgets.get("run_id").strip(), dbutils.widgets.get("path").strip(), local_dir)
-artifact_URI = local_path + "/" + os.listdir(local_path)[0]
-
-
 # Train and log the results from a model.  Try using Gradient Boosted Trees
 # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor
 import mlflow
@@ -45,7 +34,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 with mlflow.start_run() as run:
   # Import the data
-  df = pd.read_csv(artifact_URI)
+  df = pd.read_csv("/dbfs/mnt/training/airbnb/sf-listings/airbnb-cleaned-mlflow.csv")
   X_train, X_test, y_train, y_test = train_test_split(df.drop(["price"], axis=1), df[["price"]].values.ravel(), random_state=42)
     
   # Create model, train it, and create predictions
@@ -78,9 +67,15 @@ import json
 
 dbutils.notebook.exit(json.dumps({
   "status": "OK",
-  "model_output_path": model_output_path, #.replace("dbfs:", "/dbfs")
-  "data_path": artifact_URI
+  "model_output_path": model_output_path.replace("dbfs:", "/dbfs")
+  #"data_path": artifact_URI
 }))
+
+
+
+# COMMAND ----------
+
+
 
 # COMMAND ----------
 
