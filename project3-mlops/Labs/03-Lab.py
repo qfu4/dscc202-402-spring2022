@@ -71,8 +71,6 @@ entry_points:
     command: "python train.py --data_path {data_path} --bootstrap {bootstrap} --min_impurity_decrease {min_impurity_decrease}"
 '''.strip())
 
-#--data_path {data_path} 
-
 # COMMAND ----------
 
 # MAGIC %md
