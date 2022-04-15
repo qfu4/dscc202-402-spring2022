@@ -205,9 +205,14 @@ class RF_with_preprocess(mlflow.pyfunc.PythonModel):
 
 # COMMAND ----------
 
+#%sh rm -r /dbfs/user/qfu4@u.rochester.edu/mlflow/05_lab_psp/RF_with_preprocess/
+
+# COMMAND ----------
+
 # Construct and save the model
 #from mlflow.exceptions import MlflowException
-model_path =  f"{workingDir}/RF_with_preprocess1/"
+
+model_path =  f"{workingDir}/RF_with_preprocess/"
 dbutils.fs.rm(model_path, True) # remove folder if already exists
 
 rf_preprocess_model = RF_with_preprocess(trained_rf = rf2)
@@ -276,8 +281,12 @@ class RF_with_postprocess(mlflow.pyfunc.PythonModel):
 
 # COMMAND ----------
 
+#%sh rm -r 
+
+# COMMAND ----------
+
 # Construct and save the model
-model_path =  f"{workingDir}/RF_with_postprocess2/"
+model_path =  f"{workingDir}/RF_with_postprocess/"
 
 dbutils.fs.rm(model_path, True) # remove folder if already exists
 
