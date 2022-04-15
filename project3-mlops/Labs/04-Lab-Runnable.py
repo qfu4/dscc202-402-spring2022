@@ -75,7 +75,7 @@ dbutils.notebook.exit(json.dumps({
 
 # COMMAND ----------
 
-
+df
 
 # COMMAND ----------
 
